@@ -32,9 +32,7 @@
                     <p><span class="Other">▮</span>Other Sales</p>
                 </div>
                 <div class="item-info">
-                    <p class="name">Name <span>#1</span></p>
-                    <p class="publisher">Publisher • Platform</p>
-                    <p class="genre">Genre</p>
+                    <p>Game Title&nbsp;&nbsp;<span>Rank #</span>' +'<p><b>Publisher<b> • Platform</p><p>Genre</p><br><p>Global Sales</p><br><p># Million North American Sales</p><p># Million European Sales</p><p>#Million Japanese Sales</p><p># Million Other Sales</p>'
                 </div>
             </div>
         </div>
@@ -51,9 +49,9 @@
             let circleW = circleR * 2;
 
             //Bar Colors
-            let NAColor = "#4Fa";
-            let EUColor = "#66F";
-            let JPColor = "#c4F";
+            let NAColor = "#4ca";
+            let EUColor = "#44c";
+            let JPColor = "#a4c";
             let OtherColor = "#335";
 
             var dataset = [];
@@ -158,7 +156,7 @@
 
                     d3.select("div.item-info")
                     .html(
-                    '<p>' + i.Name + '&nbsp;&nbsp;<span>#' + i.Rank + '</span>' +'<p><b>' + i.Publisher + '<b> • ' + i.Platform + '</p><p>' + i.Genre + '</p><br><p>' + i.Global_Sales + ' Global Sales</p>')
+                    '<p>' + i.Name + '&nbsp;&nbsp;<span>Rank #' + i.Rank + '</span>' +'<p><b>' + i.Publisher + '<b> • ' + i.Platform + '</p><p>' + i.Genre + '</p><br><p>' + i.Global_Sales + ' Global Sales</p><br><p style="color:' + NAColor + ' ">' + i.NA_Sales + ' Million North American Sales</p><p style="color:' + EUColor + ' ">' + i.EU_Sales + ' Million European Sales</p><p style="color:' + JPColor + ' ">' + i.JP_Sales + ' Million Japanese Sales</p><p style="color:' + OtherColor + ' ">' + i.Other_Sales + ' Million Other Sales</p>')
 
                     //display information
                     svg.append("text")
@@ -170,7 +168,7 @@
                         return xScale(i.Year) + circleW;
                     })  
                     .attr("y", yScale(i.Global_Sales))
-                    .attr("fill", "#66F")
+                    .attr("fill", "#667")
 
                     svg.append("rect")
                     .attr("x", function(d) {
