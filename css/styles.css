@@ -1,0 +1,90 @@
+* {
+ margin: 0;
+ padding: 0;
+ box-sizing: border-box;
+}
+
+html, body {
+ height: 100%;
+ padding: 20px;
+}
+
+h1, h2, h3, h4, h5, h6, p, b, span, text, a {
+    font-family: Bahnschrift;
+}
+
+#section {
+    display: flex;
+    /* justify-content: space-between; */
+}
+
+#section p {
+    font-weight: bold;
+}
+
+#section span {
+    margin-right: 10px;
+}
+
+#area {
+    width: 80vw;
+    height: 700px;
+    padding: 0;
+    /* background-color: lightgrey; */
+}
+
+svg {
+    /* background-color: grey; */
+}
+
+.point {
+    background-color: black;
+    width: 10px;
+    position: absolute;
+}
+
+.axis {
+    /* position: absolute;
+    bottom: 0; */
+}
+
+text {
+    padding: 5px;
+    background-color: aliceblue;
+}
+
+rect {
+    /* fill: black; */
+    opacity: .8;
+}
+
+.title {
+    display: flex;
+    justify-content: space-between;
+}
+
+.title a {
+    text-align: right;
+}
+
+#info {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+
+    padding: 40px 0;    
+}
+
+#info .item-info {
+    height: 50%;
+    min-width: 200px;
+    border: black 2px solid;
+    padding: 20px;
+}
+
+#info .item-info p {
+    margin-bottom: 8px;
+}
+
+

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3 | Graph</title>
+		<script type="text/javascript" src="https://d3js.org/d3.v7.min.js"></script>
+        <link rel="stylesheet" href="css/styles.css">
+	</head>
+	<body>
+        <div class="title">
+            <div>
+                <h1>How Have Game Sales Changed Over the Years?</h1>
+                <h3>Top 50 Games from 1984 - 2016</h3>
+            </div>
+            <div>
+                <a href="document.html">Documentation</a><br>
+                <a href="video.html">Video</a>
+            </div>
+        </div>
+        <br>
+        <div id="section">
+            <div id="area"></div>
+            <div id="info">
+                <div class="nav">
+                    <h3>Sales by Color</h3>
+                    <br>
+                    <p><span style="color:black">●</span>Total Global Sales</p>
+                    <br>
+                    <p><span class="NA">▮</span>North American Sales</p>
+                    <p><span class="EU">▮</span>European Sales</p>
+                    <p><span class="JP">▮</span>Japanese Sales</p>
+                    <p><span class="Other">▮</span>Other Sales</p>
+                </div>
+                <div class="item-info">
+                    <p class="name">Name <span>#1</span></p>
+                    <p class="publisher">Publisher • Platform</p>
+                    <p class="genre">Genre</p>
+                </div>
+            </div>
+        </div>
+
+		<script type="text/javascript">
+
+			//Graph Measurements
+			var w = 1040;
+			var h = 640;
+			var padding = 40;
+
+            //Circle Measurements
+            let circleR = 6;
+            let circleW = circleR * 2;
+
+            //Bar Colors
+            let NAColor = "#4Fa";
+            let EUColor = "#66F";
+            let JPColor = "#c4F";
+            let OtherColor = "#335";
+
+            var dataset = [];
+            let dataLength = "";
+            let loadedData = 50;
+            let accurateLoadedData = loadedData;
+
+            var xScale; 
+            var yScale; 
+
+            //add colors to span
+            d3.select("span.NA")
+            .style("color", NAColor)
+            d3.select("span.EU")
+            .style("color", EUColor)
+            d3.select("span.JP")
+            .style("color", JPColor)
+            d3.select("span.Other")
+            .style("color", OtherColor)
+
+            //retrieve and load data
+            d3.csv("vgsales.csv").then((rows) => (dataLength = rows.length));
+            d3.csv("vgsales.csv", function (data) {
+            if (data.Year == "N/A") {
+                accurateLoadedData--;
+            } else if (data.Rank <= loadedData) {
+                dataset.push(data);
+                displayData(data);
+            }
+            });
+
+            function displayData(data) {
+                if (dataset.length >= accurateLoadedData) {
+                //Create scale functions
+                xScale = d3.scaleLinear()
+                    .domain([d3.min(dataset, function(d) { 
+                        return d.Year; 
+                    }), d3.max(dataset, function(d) { 
+                        return d.Year; 
+                    })])
+                    .range([padding, w - padding * 5]);
+
+                yScale = d3.scaleLinear()
+                    .domain([d3.max(dataset, function(d) { 
+                        return d.Global_Sales; 
+                    }), d3.min(dataset, function(d) { 
+                        return d.Global_Sales; 
+                    })])
+                    .range([padding, h - padding * 2]);
+
+                NAScale = d3.scaleLinear()
+                    .domain([d3.max(dataset, function(d) { 
+                        return d.NA_Sales; 
+                    }), d3.min(dataset, function(d) { 
+                        return d.NA_Sales; 
+                    })])
+                    .range([padding, h - padding * 2]);
+
+                //Define X axis
+                var xAxis = d3.axisBottom()
+                .scale(xScale)
+                .tickFormat(d3.format("d")); // <-- format;
+
+                //Define Y axis
+                var yAxis = d3.axisLeft()
+                .scale(yScale);
+
+
+                //Create SVG element
+                var svg = d3.select("#area")
+                .append("svg")
+                .attr("width", w)
+                .attr("height", h);
+
+                svg.append("text")
+                .text("Year Released")
+                .attr("x", w / 2 - 100)
+                .attr("y", h)
+
+                svg.append("text")
+                .text("Global Sales (in Millions)")
+                .attr("x", h / 2 - 88)
+                .attr("y", 0)
+                .attr("transform", "rotate(90)")
+
+                //Create circles
+                svg.selectAll("circle")
+                .data(dataset)
+                .enter()
+                .append("circle")
+                .attr("cx", function(d) {
+                        return xScale(d.Year);
+                })
+                .attr("cy", function(d) {
+                        return yScale(d.Global_Sales);
+                })
+                .attr("r", circleR) 
+                .on("mouseover", function (d, i) {
+                    
+                    // d3.select(this)
+                    // .attr("r", circleR)
+
+                    d3.select("div.item-info")
+                    .html(
+                    '<p>' + i.Name + '&nbsp;&nbsp;<span>#' + i.Rank + '</span>' +'<p><b>' + i.Publisher + '<b> • ' + i.Platform + '</p><p>' + i.Genre + '</p><br><p>' + i.Global_Sales + ' Global Sales</p>')
+
+                    //display information
+                    svg.append("text")
+                    .attr("class", "label")
+                    .text(function(d) {
+                        return i.Global_Sales + " Million Sales"
+                    })
+                    .attr("x", function(d) {
+                        return xScale(i.Year) + circleW;
+                    })  
+                    .attr("y", yScale(i.Global_Sales))
+                    .attr("fill", "#66F")
+
+                    svg.append("rect")
+                    .attr("x", function(d) {
+                        return xScale(i.Year) - circleR;
+                    })  
+                    .attr("y", function(d) {
+                        let NA = (h - padding - yScale(i.Global_Sales)) * (Number(i.NA_Sales) / Number(i.Global_Sales));
+                        return yScale(i.Global_Sales) + NA;
+                    })
+                    .attr("height", function(d) {
+                        return ((h - padding - yScale(i.Global_Sales)) * (Number(i.EU_Sales) / Number(i.Global_Sales)));
+                            // return h - padding - yScale(i.Global_Sales);
+                    })
+                    .attr("width", circleW)
+                    .attr("fill", EUColor)
+
+                    //add JP Sales bar section
+                    svg.append("rect")
+                    .attr("x", function(d) {
+                        return xScale(i.Year) - circleR;
+                    })  
+                    .attr("y", function(d) {
+                        let NA = (h - padding - yScale(i.Global_Sales)) * (Number(i.NA_Sales) / Number(i.Global_Sales));
+                        let EU = (h - padding - yScale(i.Global_Sales)) * (Number(i.EU_Sales) / Number(i.Global_Sales));
+                        return yScale(i.Global_Sales) + NA + EU;
+                    })
+                    .attr("height", function(d) {
+                        return ((h - padding - yScale(i.Global_Sales)) * (Number(i.JP_Sales) / Number(i.Global_Sales)));
+                            // return h - padding - yScale(i.Global_Sales);
+                    })
+                    .attr("width", circleW)
+                    .attr("fill", JPColor)
+
+                    //add Other Sales bar section
+                    svg.append("rect")
+                    .attr("x", function(d) {
+                        return xScale(i.Year) - circleR;
+                    })  
+                    .attr("y", function(d) {
+                        let NA = (h - padding - yScale(i.Global_Sales)) * (Number(i.NA_Sales) / Number(i.Global_Sales));
+                        let EU = (h - padding - yScale(i.Global_Sales)) * (Number(i.EU_Sales) / Number(i.Global_Sales));
+                        let JP = (h - padding - yScale(i.Global_Sales)) * (Number(i.JP_Sales) / Number(i.Global_Sales));
+                        return yScale(i.Global_Sales) + NA + EU + JP;
+                    })
+                    .attr("height", function(d) {
+                        return ((h - padding - yScale(i.Global_Sales)) * (Number(i.Other_Sales) / Number(i.Global_Sales)));
+                            // return h - padding - yScale(i.Global_Sales);
+                    })
+                    .attr("width", circleW)
+                    .attr("fill", OtherColor)
+
+                    //add main bar rectangle
+                    svg.append("rect")
+                    .attr("x", function(d) {
+                        return xScale(i.Year) - circleR;
+                    })  
+                    .attr("y", yScale(i.Global_Sales))
+                    .attr("height", function(d) {
+                        console.log(Number(i.NA_Sales), Number(i.Global_Sales), Number(i.NA_Sales) / Number(i.Global_Sales), (h + padding - yScale(i.Global_Sales)), (h + padding - yScale(i.Global_Sales)) * (Number(i.NA_Sales) / Number(i.Global_Sales)));
+                        return ((h - padding - yScale(i.Global_Sales)) * (Number(i.NA_Sales) / Number(i.Global_Sales)));
+                            // return h - padding - yScale(i.Global_Sales);
+                    })
+                    .attr("width", circleW)
+                    .attr("fill", NAColor)
+
+                    // svg.append("rect")
+                    // .attr("x", function(d) {
+                    //     return xScale(i.Year) - 5;
+                    // })  
+                    // .attr("y", yScale(i.Global_Sales))
+                    // .attr("height", function(d) {
+                    //     // return h - yScale(i.Global_Sales);
+                    //         return h - padding - yScale(i.Global_Sales);
+                    // })
+                    // .attr("width", 10)
+                    // .attr("fill", "#000")
+                    
+                    })
+                    
+               .on("mouseout", function (d, i) { 
+                d3.select(this)
+                .attr("r", circleR)
+                svg.selectAll("rect").remove()
+                svg.selectAll("text.label").remove()
+               })
+			
+			//Create X axis
+			svg.append("g")
+                .attr("transform", "translate(" + 0 + "," + (h - padding) + ")")
+				.attr("class", "axis x")
+				.call(xAxis);
+
+            svg.append("g")
+				.attr("class", "axis y")
+				.attr("transform", "translate(" + padding + ", " + 0 + ")")
+				.call(yAxis);
+            }
+        }
+
+        //old codes
+
+        
+			// //Create labels
+			// svg.selectAll("p")
+			//    .data(dataset)
+			//    .enter()
+			//    .append("p")
+			//    .text(function(d) {
+			//    		return d.Global_Sales + "," + d.Year;
+			//    })
+			//    .attr("x", function(d) {
+			//    		return xScale(d.Year);
+			//    })
+			//    .attr("y", function(d) {
+			//    		return yScale(d.Year);
+			//    })
+			//    .attr("font-family", "sans-serif")
+			//    .attr("font-size", "11px")
+			//    .attr("color", "grey");
+
+			// var yScale = d3.scaleLinear()
+			// 					 .domain([0, d3.max(dataset, function(d) { return d[1]; })])
+			// 					 .range([h - padding, padding]);
+
+			// var aScale = d3.scaleSqrt()
+			// 					 .domain([0, d3.max(dataset, function(d) { return d[1]; })])
+			// 					 .range([0, 10]);
+
+			// .attr("fill", "#ffffff");
+                    // .attr("fill", function(d) {
+                    //     console.log("NA", i.NA_Sales, "EU", i.EU_Sales, "JP", i.JP_Sales, "Other", i.Other_Sales)
+                    //     if(
+                    //     i.NA_Sales >= i.EU_Sales && 
+                    //     i.NA_Sales >= i.JP_Sales && 
+                    //     i.NA_Sales >= i.Other_Sales) {
+                    //         console.log("NA", i.NA_Sales);
+                    //         return("#f33");
+                    //     } else if (
+                    //     i.EU_Sales >= i.NA_Sales && 
+                    //     i.EU_Sales >= i.JP_Sales && 
+                    //     i.EU_Sales >= i.Other_Sales) {
+                    //         console.log("EU", i.EU_Sales);
+                    //         return("#3f3");
+                    //     } else if (
+                    //     i.JP_Sales >= i.NA_Sales && 
+                    //     i.JP_Sales >= i.EU_Sales && 
+                    //     i.JP_Sales >= i.Other_Sales) {
+                    //         console.log("JP", i.JP_Sales);
+                    //         return("#33f");
+                    //     } else if (
+                    //     i.Other_Sales >= i.NA_Sales && 
+                    //     i.JOther_Sales_Sales >= i.EU_Sales && 
+                    //     i.Other_Sales_Sales >= i.JP_Sales) {
+                    //         console.log("JP", i.Other_Sales);
+                    //         return("#f3f");
+                    //     }
+
+		</script>
+	</body>
+</html>
+
+
