@@ -36,12 +36,29 @@
         <br>
         <br>
     <p>
-        This graph combined a scatterplot graph with a bar graph. If I were to just use a bar graph, then lots of the individual data for each game would be hidden and you would only be able to see the top selling game per year. However, a bar graph also has its benefits as you can get a better sense of the height of the object by highlighting the space between top and bottom. I was able to use this to show more data with it as well. 
+    This graph combined a scatterplot graph with a bar graph. If I were to just use a bar graph, then lots of the individual data for each game would be hidden and you would only be able to see the top selling game per year. However, a bar graph also has its benefits as you can get a better sense of the height of the object by highlighting the space between top and bottom. I was able to use this to show more data with it as well. 
     <p>
     <p>
-
+    I really liked this idea for the visualization, but quickly encountered some problems with it upon coding it, especially with being so new to D3. First, it took me much longer than I expected to get my data displayed on the file. The data I downloaded was formatted differently than in both the lecture and book examples, so I struggled to understand how to do it with my data. I had to add in extra elements to prevent anything from displaying until the amount of data needed had loaded and I had to load and display it in a different way. I also added a way for it to filter out null data. One issue I quickly ran into was the data not displaying as I was imagining, since the years were very structured, not containing any in-between information like a decimal would provide, the point ended up in very structured lines and not as random as other scatter plots. This immediately worried me because it would make it easy for points to get covered when a bar was on the screen, so I made the bar transparent. 
     </p>
-
+    <br>
+    <img style="height: 400px;" src="GraphWIP.png" alt="">
+    <br>
+    <br>
+    <p>
+    Once I got the points displayed, I realized I needed to get the x-axis and y-axis lines and labels. I quickly found out this did not work with what I had done so far and ended up restarting on a new file. This worked out better than expected and I was able to reference the old code to get everything working surprising quickly. From this I was able to fine tune it and add in all of the features I wanted to include. I got the hover bar working after lots of time spent working out the math. It requires taking the multiplier used on the global sales data then applying that to the height of each rect section with some additional math for the y of each rect. I set up a color key to the side. I went with a hue variation to make each section easily identifiable. First, they were red, green, blue and black. However, to avoid problems with color blindness I changed this to green, blue, purple, and dark grey. It is a set of colors in order on the color wheel that also start from lightest to darkest with the lightest at the top of the bar to feel balanced. These colors are used in the information section to the right as well to make the data easier to understand, I also darkened the colors to make them more readable on text.
     </p>
+    <br>
+    <img style="height: 400px;" src="Graph1.png" alt="">
+    <br>
+    <br>
+    <p>With this graph I wanted to learn more about how sales for video games have changed over the years. I thought this graph fit well with the broader question and can help answer a lot of questions. I was able to find the huge gap in sales that Wii Sports had over any other game listed. This is due to both it and other games like Duck Hunt or the original Super Mario Bros. being packed in this their console which counted towards their sales. Another point I found interesting was with the games of that era. There are not as many high-ranking games as there are in the later years, but the games did sell very well, especially for their time when video games were still quite new. All the games in that section ranked in the top half or top 25.<br>
+    I was also curious about the gap between the mid-80s to late 80s then the early 90s to mid-90s. Initially I had thought they were the two big video game crashes, but that only makes sense for the gap in the 80s as the crash happened in 1983, which explains why the only two games to make the chart were ones sold with the biggest console of the time. The other, however, has me curious as to the circumstances of that happening, considering its much bigger than the famous 1983 game crash.
+    </p>
+    <img src="" alt="">
+    <p>Overall, I am satisfied with my work on this project, and I’m happy I could connect things learned in this chart with my previous knowledge from the History of Video Games course I took last Spring. I believe there are still some improvements I could have made, better ways to go about things and new aspects to learn about D3. However, this has taught me a lot about this JavaScript language that I can put to good use in my coding career.</p>
+    <br>
+    <br>
+    <br>
 </body>
 </html>
